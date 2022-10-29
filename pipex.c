@@ -2,16 +2,24 @@
 
 char    *path(char *cmd, char **envp)
 {
-    char **paths_envp;
-    char  *mypaths;
+    char *paths_envp;
+    char  **mypaths;
     char  **mycmdargs;
     int i;
 
     i = 0;
-if (ft_strnstr(cmd, "/", ft_strlen(cmd)))
+   if (ft_strnstr(cmd, "/", ft_strlen(cmd)))
         return(cmd);
-  m
+   paths_envp = ft_ 
+    mypaths = ft_split(parts_envp, ":");
+   mycmdargs = ft_split(ag[2], " ");
+   if (!acesse(path, F_OK))
+    {
+        
+    }
+
 }
+
 void    child_1(int f1, char *cmd1)
 {
     int i;
