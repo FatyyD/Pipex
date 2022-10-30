@@ -1,6 +1,6 @@
-#include <pipex.h>
+#include "pipex.h"
 
-char    *path(char *cmd, char **envp)
+char    *path(char *cmd, char *ag, char **envp)
 {
     char *paths_envp;
     char  **mypaths;
@@ -10,56 +10,57 @@ char    *path(char *cmd, char **envp)
     i = 0;
    if (ft_strnstr(cmd, "/", ft_strlen(cmd)))
         return(cmd);
-   paths_envp = ft_ 
-    mypaths = ft_split(parts_envp, ":");
+   //paths_envp =
+    mypaths = ft_split(paths_envp, ":");
    mycmdargs = ft_split(ag[2], " ");
-   if (!acesse(path, F_OK))
+   if (!acess(path, F_OK))
     {
-        
+        while(mypaths[++i])
+        {
+            cmd = ft_strjoin(mypaths[i], ag[2]);
+            execve(cmd, mycmdargs, envp);
+            free(cmd);
+        }
+        exit(EXIT_FAILURE);
     }
 
 }
 
-void    child_1(int f1, char *cmd1)
+void    child_f(int f1, char *cmd1)
 {
-    int i;
-    char *cmd;
+    int fd[2];
 
-    i = -1;
     dup2(f1, STDIN_FILENO);
     dup2(fd[1], STDOUT_FILENO);
     close(fd[0]);
     close(f1);
-    while(mypaths[++i])
+   /*while(mypaths[++i])
     {
         cmd = ft_strjoin(mypaths[i], ag[2]);
-        execve(cmd, mycmddargs, envp);
+        execve(cmd, path, envp);
         free(cmd);
     }
-    exit(EXIT_FAILURE);
+    exit(EXIT_FAILURE);*/
 }
 
-void  child_2(int f2, char *cmd2)
+void  child_s(int f2, char *cmd2)
 {
-    int i;
-    char *cmd;
+    int fd[2];
 
-    i = -1;
     dup2(f2, STDIN_FILENO);
     dup2(fd[0], STDOUT_FILENO);
     close(fd[1]);
     close(f2);
 
-    while(mypaths[++i])
-    {
+    if (cmd )
         cmd = ft_strjoin(mypaths[i], ag[2]);
-        execve(cmd, mycmddargs, envp);
+        execve(cmd, path, envp);
         free(cmd);
     }
-    exit(EXIT_FAILURE);
+    exit(EXIT_FAILURE);*/
 }
 
-void pipex(int f1, int f2, char *cmd1, char *cmd 2)
+void pipex(int f1, int f2, char *cmd1, char *cmd2)
 {
     int fd[2];
     int status;
@@ -71,12 +72,12 @@ void pipex(int f1, int f2, char *cmd1, char *cmd 2)
     if (c1 < 0)
         return (perror("fork: "));
     if (c1 == 0)
-        child_1(f1, cmd1);
-        c2 = fork();
+        child_f(f1, cmd1);
+    c2 = fork();
     if (c2 < 0)
         return (perror("fork: "));
     if(c2 == 0)
-    child_2(f2, cmd2);
+    child_s(f2, cmd2);
     close(fd[0]);
     close(fd[1]);
     waitpid(c1, &status, 0);
@@ -84,7 +85,7 @@ void pipex(int f1, int f2, char *cmd1, char *cmd 2)
 
 }
 
-int main(int ac, char **av, char **envp)
+int main(int ac, char **ag, char **envp)
 {
     int f1;
     int f2;
@@ -93,7 +94,7 @@ int main(int ac, char **av, char **envp)
     f2 = open(ag[4], O_CREAT | O_RDWR | O_TRUNC, 0644);
     if (f1 < 0 || f2 < 0)
         return (-1);
-        pipex(f1, f2, ag, envp);
+        pipex(f1, f2, ag, &envp);
         return(0);
 }
 /*int main(int a, int *argv, char **argc)
