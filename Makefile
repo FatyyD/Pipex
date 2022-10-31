@@ -4,7 +4,8 @@ CC = gcc
 
 CFLAGS = -Wall -Wextra -Werror
 SRC = pipex.c/
-	  pipex_utils.c
+	  pipex_utils.c/
+	  pipex_splits.c/
 	
 	
 OBJ = $(SRC:.c=.o)
