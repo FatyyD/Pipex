@@ -10,17 +10,17 @@ char    *path(char *cmd, char *ag, char **envp)
     i = 0;
    if (ft_strnstr(cmd, "/", ft_strlen(cmd)))
         return(cmd);
-   //paths_envp =
-    mypaths = ft_split(paths_envp, ":");
+   mypaths = ft_split(paths_envp, ":");
    mycmdargs = ft_split(ag[2], " ");
-   if (!acess(path, F_OK))
+   i = -1;
+    while(mypaths[++i])
     {
-        while(mypaths[++i])
+        mycmdargs
+        if(!access(path, F_OK))
         {
-            cmd = ft_strjoin(mypaths[i], ag[2]);
-            execve(cmd, mycmdargs, envp);
-            free(cmd);
+        free(mycmdargs);
         }
+    }
         exit(EXIT_FAILURE);
     }
 
@@ -37,7 +37,7 @@ void    child_f(int f1, char *cmd1)
    /*while(mypaths[++i])
     {
         cmd = ft_strjoin(mypaths[i], ag[2]);
-        execve(cmd, path, envp);
+        execve(path(cmd[0], envp), cmd, envp);
         free(cmd);
     }
     exit(EXIT_FAILURE);*/
@@ -46,13 +46,14 @@ void    child_f(int f1, char *cmd1)
 void  child_s(int f2, char *cmd2)
 {
     int fd[2];
+    char **cmd;
 
     dup2(f2, STDIN_FILENO);
     dup2(fd[0], STDOUT_FILENO);
     close(fd[1]);
     close(f2);
 
-    if (cmd )
+    /*if (cmd )
         cmd = ft_strjoin(mypaths[i], ag[2]);
         execve(cmd, path, envp);
         free(cmd);
