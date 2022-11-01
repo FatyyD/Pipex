@@ -25,56 +25,79 @@ char    *path(char *cmd, char **envp)
    //mypaths = ft_split(paths_envp, ':');
   // mycmdargs = ft_split(av[2], ' ');
    i = -1;
-
-    while(mypaths[++i])
+    while(paths_envp[++i])
     {
         mypaths = ft_strjoin(paths_envp[i], "/"); 
         mycmdargs = ft_strjoin(mypaths, cmd);
-        free(paths_envp);
-        if(!access(path, F_OK))
+        free(mypaths);
+        if(!access(mycmdargs, F_OK))
         {
-        free(paths_envp);
-         return(mycmdargs);
+            free_s(paths_envp);
+           return(mycmdargs);
         }
+        free (mycmdargs);
     }
-        exit(EXIT_FAILURE);
+        //free_s(mypaths);
+        return(0);
 }
 
 void    child_f(int *fd, char **av, char **envp)
 {
     char **cmd;
-
-    dup2(fd[1], STDIN_FILENO);
-    dup2(fd[0], STDOUT_FILENO);
-    close(fd[1]);
+    int f1;
+    char *p;
+    f1 = open(av[1], O_RDONLY);
+        if(fd[0] < 0)
+            msg_erreur(av[1]);
+    dup2(f1, STDIN_FILENO);
+    dup2(fd[1], STDOUT_FILENO);
     close(fd[0]);
+    close(f1);
     cmd = ft_split(av[2], ' ');
-    if (cmd && path(cmd[0], envp))
+    p = path(cmd[0], envp);
+    if (!cmd)
+    {
+        free_s(cmd);
+        erreur();
+        exit(1);
+    }
+    execve(p, cmd, envp);
+    /*if (cmd && path(cmd[0], envp))
     {
         execve(path(cmd[0], envp), cmd, envp);
-        perror("Error");
-        free(cmd);
+        free_s(cmd);
     }
-    exit(EXIT_FAILURE);
+    exit(EXIT_FAILURE);*/
 }
 
 void  child_s(int *fd, char **av, char **envp)
 {
     char **cmd;
-
-    dup2(fd[0], STDIN_FILENO);
-    dup2(fd[1], STDOUT_FILENO);
-    close(fd[0]);
+     int f2;
+    char *p;
+    f2 = open(av[4], O_CREAT | O_RDWR | O_TRUNC, 0644);
+       if (fd[1] < 0)
+            msg_erreur(av[4]);
+    dup2(f2, STDIN_FILENO);
+    dup2(fd[0], STDOUT_FILENO);
     close(fd[1]);
+    close(f2);
      cmd = ft_split(av[3], ' ');
-    if (cmd && path(cmd[0], envp))
+      p = path(cmd[0], envp);
+    if (!cmd)
+    {
+        free_s(cmd);
+        erreur();
+        exit(1);
+    }
+    execve(p, cmd, envp);
+   /* f (cmd && path(cmd[0], envp))
     {
         execve(path(cmd[0], envp), cmd, envp);
-        perror("Error");
-        free(cmd);
+        free_s(cmd);
     }
     exit(EXIT_FAILURE);
-    /*if (cmd )
+    if (cmd )
         cmd = ft_strjoin(mypaths[i], ag[2]);
         execve(cmd, path, envp);
         free(cmd);
@@ -88,22 +111,26 @@ int  main(int ac, char **av,  char **envp)
     int status;
     pid_t c1;
     pid_t c2;
-
-    pipe(fd);
+    
+    if (ac != 5)
+        erreur();
+    if (pipe(fd) < 0)
+           msg_erreur(NULL);
     c1 = fork();
     if (c1 < 0)
-        return (0);
+        msg_erreur("fork");
     if (c1 == 0)
         child_f(fd, av, envp);
     c2 = fork();
     if (c2 < 0)
-        return (0);
+         msg_erreur("fork");
     if(c2 == 0)
     child_s(fd, av, envp);
     close(fd[0]);
     close(fd[1]);
-    waitpid(c1, &status, 0);
-    waitpid(c2, &status, 0);
+    waitpid(-1, &status, 0);
+    waitpid(-1, &status, 0);
+    //free parent;
  return (0);
 }
 

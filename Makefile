@@ -1,4 +1,4 @@
-NAME = pipex.a
+NAME = pipex
 
 CC = gcc
 
@@ -6,7 +6,7 @@ CFLAGS = -Wall -Wextra -Werror
 SRC = pipex.c/
 	  pipex_utils.c/
 	  pipex_splits.c/
-	
+	  pipex_erreur.c
 	
 OBJ = $(SRC:.c=.o)
 
